@@ -43,7 +43,7 @@ class Creature(Carte):
 
 class Blast(Carte):
     def __init__(self):
-        Carte.__init__(self,"blast 1",40,"Vous jouez un blast, vous infligez 40 degats",40,0)
+        Carte.__init__(self,"blast 1",40,"Vous jouez un blast",40,0)
 
 class Mage:
     def __init__(self,name,hp,mana):
@@ -58,9 +58,6 @@ class Mage:
     
     def getName (self):
         return self.__name
-
-    def getTest (self):
-        return self.__manaMax
     
     def getHP (self):
         return self.__hp
@@ -69,6 +66,9 @@ class Mage:
         self.__hp -= degats
 
     def getMana (self):
+        if self.__mana > self.__manaMax:
+            self.__mana = self.__manaMax
+
         return self.__mana
 
     def getValeurActuelle(self,valAct):
@@ -76,20 +76,15 @@ class Mage:
 
     def recupMana(self):
         self.__mana += 20
-        print("Vous récupérez 20 de mana")
-
-    def setMana (self,price):
-        self.__mana += price
-
-        if self.__mana > self.__manaMax:
-            self.__mana = self.__manaMax
 
     def upManaMax(self,up):
         self.__manaMax += up
 
-
     def jouer(self,price):
         self.__mana -= price
+
+        if self.__mana > self.__manaMax:
+            self.__mana = self.__manaMax
 
     def getDefausse(self,carteCreature1,carteCreature2,carteCristal,carteBlast):
         if carteCreature1 == False:
@@ -145,48 +140,107 @@ class Mage:
         self.__carteBlast = False
         return self.__carteBlast
 
-creature1 = Creature("creature 1",5,"Vous jouez la 1e créature",10,20)
+creature1 = Creature("creature 1",5,"Vous jouez la 1e créature pas très forte",10,20)
 creature2 = Creature("creature 2",15,"Vous jouez la 2e créature trop forte",20,45)
 cristal = Cristal()
 blast = Blast()
 
 nomJoueur1 = input("Joueur 1, quel est ton nom ? -> ")
 nomJoueur2 = input("Joueur 1, quel est ton nom ? -> ")
+print("--------------------------------")
 
-
-mage1 = Mage(nomJoueur1,50,100)
-mage2 = Mage(nomJoueur2,50,100)
-
-print(mage2.getJeu(mage2.getCreature1(),mage2.getCreature2(),mage2.getCristal(),mage2.getBlast()))
-choixJoueur1 = int(input("Quelle carte veux tu joeur ?"))
-
-
-
+mage1 = Mage(nomJoueur1,100,100)
+mage2 = Mage(nomJoueur2,100,100)
 
 while mage1.getHP() > 0 and mage2.getHP() > 0 :
-    print("Au tour du 1e mage de jouer :")
+    print("Au tour de ",mage1.getName()," de jouer, il possède ",mage1.getHP()," POINT DE VIE et ",mage1.getMana()," MANA :")
 
     print(mage1.getJeu(mage1.getCreature1(),mage1.getCreature2(),mage1.getCristal(),mage1.getBlast()))
-    choixJoueur1 = int(input("Quelle carte veux tu joueur ? (1 : créature 1 / 2 : créature 2 / 3: cristal / 4 : Blast) " ))
+    choixJoueur1 = int(input("Quelle carte veux tu joueur ? (1 : créature 1 / 2 : créature 2 / 3: cristal / 4 : Blast / 5: Récupuerer du mana) -> " ))
 
     if choixJoueur1 == 1:
         mage1.setCreature1()
-        carteActuelle = creature1
+        carteActuelleJoueur1 = creature1
 
     if choixJoueur1 == 2:
         mage1.setCreature2()
-        carteActuelle = creature2
+        carteActuelleJoueur1 = creature2
 
     if choixJoueur1 == 3:
         mage1.setCristal()
-        carteActuelle = cristal
+        mage1.upManaMax(cristal.getNouveauManaMax())
+        carteActuelleJoueur1 = cristal
 
     if choixJoueur1 == 4:
         mage1.setBlast()
-        carteActuelle = blast
+        carteActuelleJoueur1 = blast
 
-    print(carteActuelle.getDescription()," vous infligez ",carteActuelle.getDegats()," dégats !")
-    
+    if choixJoueur1 == 5:
+        mage1.recupMana()
 
+    if choixJoueur1 == 1 or choixJoueur1 == 2 or choixJoueur1 == 4:
+        print(carteActuelleJoueur1.getDescription()," vous infligez ",carteActuelleJoueur1.getDegats()," dégats à votre adversaire!")
+    if choixJoueur1 == 4:
+        print(carteActuelleJoueur1.getDescription())
+    if choixJoueur1 == 5:
+        print("Vous récupérez 20 de mana")
+        
+    if choixJoueur1 == 1 or choixJoueur1 == 2 or choixJoueur1 == 3 or choixJoueur1 == 4:
+        if choixJoueur1 == 3:
+            print("Votre mana max augment de 25")
+        print("Vous perdez ",carteActuelleJoueur1.getPrice()," points de mana")
+        mage1.jouer(carteActuelleJoueur1.getPrice())
+        mage2.setHP(carteActuelleJoueur1.getDegats())
 
+    print("--------------------------------")
 
+    if (mage2.getHP() < 0):
+        break
+
+    print("Au tour de ",mage2.getName()," de jouer, il possède ",mage2.getHP()," POINT DE VIE et ",mage2.getMana()," MANA :")
+
+    print(mage2.getJeu(mage2.getCreature1(),mage2.getCreature2(),mage2.getCristal(),mage2.getBlast()))
+    choixJoueur2 = int(input("Quelle carte veux tu joueur ? (1 : créature 1 / 2 : créature 2 / 3: cristal / 4 : Blast) -> " ))
+
+    if choixJoueur2 == 1:
+        mage2.setCreature1()
+        carteActuelleJoueur2 = creature1
+
+    if choixJoueur2 == 2:
+        mage2.setCreature2()
+        carteActuelleJoueur2 = creature2
+
+    if choixJoueur2 == 3:
+        mage2.setCristal()
+        mage2.upManaMax(cristal.getNouveauManaMax())
+        carteActuelleJoueur2 = cristal
+
+    if choixJoueur2 == 4:
+        mage2.setBlast()
+        carteActuelleJoueur2 = blast
+
+    if choixJoueur2 == 5:
+        mage2.recupMana()
+
+    if choixJoueur2 == 1 or choixJoueur2 == 2 or choixJoueur2 == 4:
+        print(carteActuelleJoueur2.getDescription()," vous infligez ",carteActuelleJoueur2.getDegats()," dégats à votre adversaire!")
+    if choixJoueur2 == 4:
+        print(carteActuelleJoueur2.getDescription())
+    if choixJoueur2 == 5:
+        print("Vous récupérez 20 de mana")
+
+    if choixJoueur2 == 1 or choixJoueur2 == 2 or choixJoueur2 == 3 or choixJoueur2 == 4:
+        print("Vous perdez ",carteActuelleJoueur2.getPrice()," points de mana")
+        mage2.jouer(carteActuelleJoueur2.getPrice())
+        mage1.setHP(carteActuelleJoueur2.getDegats())
+
+    print("--------------------------------")
+
+    if (mage1.getHP() < 0):
+        break
+
+if mage1.getHP() > mage2.getHP():
+    print("Bien joué ",mage1.getName()," tu as gagné !")
+
+if mage2.getHP() > mage1.getHP():
+    print("Bien joué ",mage2.getName()," tu as gagné !")
