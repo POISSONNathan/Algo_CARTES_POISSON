@@ -115,7 +115,7 @@ class Mage:
             print("Vous possédez ",carteCristal," carte : Cristal, vous pouvez augmentez votre mana max ")
 
         if carteBlast == True:
-            print("Vous possédez une carte : Blast , vous faites de gros dégats, utilisable 1 seule fois")
+            print("Vous possédez une carte : Blast , il fait de gros dégats, utilisable 1 seule fois")
 
     def getCreature1(self):
         return self.__carteCreature1
@@ -147,8 +147,8 @@ class Mage:
 
 creature1 = Creature("creature 1",5,"Vous jouez la 1e créature",10,20)
 creature2 = Creature("creature 2",15,"Vous jouez la 2e créature trop forte",20,45)
-blast = Blast()
 cristal = Cristal()
+blast = Blast()
 
 nomJoueur1 = input("Joueur 1, quel est ton nom ? -> ")
 nomJoueur2 = input("Joueur 1, quel est ton nom ? -> ")
@@ -157,17 +157,36 @@ nomJoueur2 = input("Joueur 1, quel est ton nom ? -> ")
 mage1 = Mage(nomJoueur1,50,100)
 mage2 = Mage(nomJoueur2,50,100)
 
-print(mage1.getJeu(mage1.getCreature1(),mage1.getCreature2(),mage1.getCristal(),mage1.getBlast()))
-choixJoueur1 = int(input("Quelle carte veux tu joeur ?"))
-
 print(mage2.getJeu(mage2.getCreature1(),mage2.getCreature2(),mage2.getCristal(),mage2.getBlast()))
 choixJoueur1 = int(input("Quelle carte veux tu joeur ?"))
+
+
+
+
+while mage1.getHP() > 0 and mage2.getHP() > 0 :
+    print("Au tour du 1e mage de jouer :")
+
+    print(mage1.getJeu(mage1.getCreature1(),mage1.getCreature2(),mage1.getCristal(),mage1.getBlast()))
+    choixJoueur1 = int(input("Quelle carte veux tu joueur ? (1 : créature 1 / 2 : créature 2 / 3: cristal / 4 : Blast) " ))
+
+    if choixJoueur1 == 1:
+        mage1.setCreature1()
+        carteActuelle = creature1
+
+    if choixJoueur1 == 2:
+        mage1.setCreature2()
+        carteActuelle = creature2
+
+    if choixJoueur1 == 3:
+        mage1.setCristal()
+        carteActuelle = cristal
+
+    if choixJoueur1 == 4:
+        mage1.setBlast()
+        carteActuelle = blast
+
+    print(carteActuelle.getDescription()," vous infligez ",carteActuelle.getDegats()," dégats !")
     
-
-
-
-
-
 
 
 
