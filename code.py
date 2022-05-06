@@ -1,3 +1,4 @@
+from enum import Flag
 import random
 
 class Carte:
@@ -41,10 +42,8 @@ class Creature(Carte):
             print("Votre créature est morte")
 
 class Blast(Carte):
-    def __init__(self,name,price,description,degats,hp):
-        Carte.__init__(self,name,price,description,degats,hp)
-
-    
+    def __init__(self):
+        Carte.__init__(self,"blast 1",40,"Vous jouez un blast, vous infligez 40 degats",40,0)
 
 class Mage:
     def __init__(self,name,hp,mana):
@@ -52,6 +51,10 @@ class Mage:
         self.__hp = hp
         self.__mana = mana
         self.__manaMax = 100
+        self.__carteCreature1 = 3
+        self.__carteCreature2 = 3
+        self.__carteCristal = 3
+        self.__carteBlast = True
     
     def getName (self):
         return self.__name
@@ -68,6 +71,13 @@ class Mage:
     def getMana (self):
         return self.__mana
 
+    def getValeurActuelle(self,valAct):
+        return valAct
+
+    def recupMana(self):
+        self.__mana += 20
+        print("Vous récupérez 20 de mana")
+
     def setMana (self,price):
         self.__mana += price
 
@@ -77,35 +87,85 @@ class Mage:
     def upManaMax(self,up):
         self.__manaMax += up
 
-    def getValeurActuelle(self,valAct):
-        return valAct
 
     def jouer(self,price):
         self.__mana -= price
 
-    def defausse(self):
-        self
+    def getDefausse(self,carteCreature1,carteCreature2,carteCristal,carteBlast):
+        if carteCreature1 == False:
+            print("Vous ne possédez plus de carte Créature")
 
+        if carteCreature2 == False:
+            print("Vous ne possédez plus de carte Créature surpuissante")
 
-creature1 = Creature("creatrure 1",5,"Vous jouez la 1e créature",10,20)
+        if carteCristal == True:
+            print("Vous ne possédez plus de carte Cristal")
 
-creature2 = Creature("creatrure 1",15,"Vous jouez la 2e créature trop forte",20,45)
+        if carteBlast == False:
+            print("Vous ne possédez plus de carte Blast")
 
-blast = Blast("blast 1",40,"Vous jouez un blast, vous infligez 40 degats",40,0)
+    def getJeu(self,carteCreature1,carteCreature2,carteCristal,carteBlast):
+        if carteCreature1 > 0 :
+            print("Vous possédez ",carteCreature1," carte : créature")
 
+        if carteCreature2 > 0:
+            print("Vous possédez ",carteCreature2," carte : créature surpuissante ")
+
+        if carteCristal > 0:
+            print("Vous possédez ",carteCristal," carte : Cristal, vous pouvez augmentez votre mana max ")
+
+        if carteBlast == True:
+            print("Vous possédez une carte : Blast , vous faites de gros dégats, utilisable 1 seule fois")
+
+    def getCreature1(self):
+        return self.__carteCreature1
+
+    def setCreature1(self):
+        self.__carteCreature1 -= 1
+        return self.__carteCreature1
+
+    def getCreature2(self):
+        return self.__carteCreature2
+
+    def setCreature2(self):
+        self.__carteCreature2 -= 1
+        return self.__carteCreature2 
+
+    def getCristal(self):
+        return self.__carteCristal
+
+    def setCristal(self):
+        self.__carteCristal -= 1
+        return self.__carteCristal
+
+    def getBlast(self):
+        return self.__carteBlast
+
+    def setBlast(self):
+        self.__carteBlast = False
+        return self.__carteBlast
+
+creature1 = Creature("creature 1",5,"Vous jouez la 1e créature",10,20)
+creature2 = Creature("creature 2",15,"Vous jouez la 2e créature trop forte",20,45)
+blast = Blast()
 cristal = Cristal()
 
-mage1 = Mage("MAGE cheat",50,100)
-
-mage2 = Mage("Mage fort",50,100)
-
-
-while mage1.getHP() > 0 and mage2.getHP() > 0 :
-    print("Au tour du 1e mage de jouer :")
+nomJoueur1 = input("Joueur 1, quel est ton nom ? -> ")
+nomJoueur2 = input("Joueur 1, quel est ton nom ? -> ")
 
 
+mage1 = Mage(nomJoueur1,50,100)
+mage2 = Mage(nomJoueur2,50,100)
 
-    print("Au tour du 2e mage de jouer :")
+print(mage1.getJeu(mage1.getCreature1(),mage1.getCreature2(),mage1.getCristal(),mage1.getBlast()))
+choixJoueur1 = int(input("Quelle carte veux tu joeur ?"))
+
+print(mage2.getJeu(mage2.getCreature1(),mage2.getCreature2(),mage2.getCristal(),mage2.getBlast()))
+choixJoueur1 = int(input("Quelle carte veux tu joeur ?"))
+    
+
+
+
 
 
 
